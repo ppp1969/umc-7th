@@ -83,4 +83,18 @@ public class Member extends BaseEntity {
             review.setMember(null); // 관계 해제
         }
     }
+
+    public void addMemberMission(MemberMission memberMission) {
+        if (!this.memberMissionList.contains(memberMission)) {
+            this.memberMissionList.add(memberMission);
+            memberMission.setMember(this); // 양방향 관계 설정
+        }
+    }
+
+    public void removeMemberMission(MemberMission memberMission) {
+        if (this.memberMissionList.contains(memberMission)) {
+            this.memberMissionList.remove(memberMission);
+            memberMission.setMember(null); // 관계 해제
+        }
+    }
 }
