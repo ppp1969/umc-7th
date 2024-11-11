@@ -33,8 +33,12 @@ public enum ErrorStatus implements BaseErrorCode {
     REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "REGION4001", "해당 지역이 없습니다."),
 
     // Store Error
-    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "해당 식당이 없습니다.");
-    
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "해당 식당이 없습니다."),
+
+    // Mission Error
+    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION4001", "해당 미션이 없습니다.");
+
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
@@ -55,7 +59,7 @@ public enum ErrorStatus implements BaseErrorCode {
                 .code(code)
                 .isSuccess(false)
                 .httpStatus(httpStatus)
-                .build()
-                ;
+                .build();
     }
+
 }

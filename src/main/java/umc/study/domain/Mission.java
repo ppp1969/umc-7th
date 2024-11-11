@@ -32,4 +32,18 @@ public class Mission extends BaseEntity {
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL)
     private List<MemberMission> memberMissionList = new ArrayList<>();
+
+    public void addMemberMission(MemberMission memberMission) {
+        if (!this.memberMissionList.contains(memberMission)) {
+            this.memberMissionList.add(memberMission);
+            memberMission.setMission(this); // 양방향 관계 설정
+        }
+    }
+
+    public void removeMemberMission(MemberMission memberMission) {
+        if (this.memberMissionList.contains(memberMission)) {
+            this.memberMissionList.remove(memberMission);
+            memberMission.setMission(null); // 관계 해제
+        }
+    }
 }
