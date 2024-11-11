@@ -69,4 +69,18 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberMission> memberMissionList = new ArrayList<>();
+
+    public void addReview(Review review) {
+        if (!this.reviewList.contains(review)) {
+            this.reviewList.add(review);
+            review.setMember(this); // 양방향 관계 설정
+        }
+    }
+
+    public void removeReview(Review review) {
+        if (this.reviewList.contains(review)) {
+            this.reviewList.remove(review);
+            review.setMember(null); // 관계 해제
+        }
+    }
 }

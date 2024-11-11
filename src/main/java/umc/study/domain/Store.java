@@ -61,4 +61,18 @@ public class Store extends BaseEntity {
             region.getStoreList().add(this);
         }
     }
+
+    public void addReview(Review review) {
+        if (!this.reviewList.contains(review)) {
+            this.reviewList.add(review);
+            review.setStore(this); // 양방향 관계 설정
+        }
+    }
+
+    public void removeReview(Review review) {
+        if (this.reviewList.contains(review)) {
+            this.reviewList.remove(review);
+            review.setStore(null); // 관계 해제
+        }
+    }
 }
