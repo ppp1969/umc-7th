@@ -19,4 +19,9 @@ public class MemberQueryServiceImpl implements MemberQueryService{
     public Optional<Member> findMember(Long id) {
         return memberRepository.findById(id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return memberRepository.existsById(id);
+    }
 }
