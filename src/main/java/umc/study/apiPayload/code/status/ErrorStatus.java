@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import umc.study.apiPayload.code.BaseErrorCode;
 import umc.study.apiPayload.code.ErrorReasonDTO;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
@@ -36,13 +39,24 @@ public enum ErrorStatus implements BaseErrorCode {
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "해당 식당이 없습니다."),
 
     // Mission Error
-    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION4001", "해당 미션이 없습니다.");
+    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION4001", "해당 미션이 없습니다."),
 
+    // Paging
+    NEGATIVE_PAGE(HttpStatus.BAD_REQUEST, "PAGE4001", "페이지는 1이상 값이어야 합니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
 
+    // 코드 기반으로 Status 찾아서 맵핑하는 함수
+    // 애노테이션에서 해당 Code를 날리면, ExceptionAdvice에서 이 함수를 사용함!
+    // ExceptionAdvice에서 code를 통해 Status 찾고 response 생성
+    public static Optional<ErrorStatus> fromCode(String code) {
+        return Arrays.stream(values())
+                .filter(status -> status.getCode().equals(code))
+                .findFirst();
+    }
+    
     @Override
     public ErrorReasonDTO getReason() {
         return ErrorReasonDTO.builder()
