@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import umc.study.apiPayload.code.status.ErrorStatus;
 import umc.study.validation.annotation.PositivePage;
 
 @Component
@@ -16,6 +17,13 @@ public class PagePositiveValidator implements ConstraintValidator<PositivePage, 
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        return value >= 1;
+        boolean isValid =  value >= 1;
+
+        if (!isValid) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(ErrorStatus.NEGATIVE_PAGE.toString()).addConstraintViolation();
+        }
+
+        return isValid;
     }
 }

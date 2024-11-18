@@ -28,22 +28,14 @@ import java.util.Optional;
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(
-            ConstraintViolationException ex, WebRequest request) {
-
-        // 첫 번째 검증 오류 메시지(코드) 추출
-        String errorCode = ex.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
+    @ExceptionHandler
+    public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
+        String errorMessage = e.getConstraintViolations().stream()
+                .map(constraintViolation -> constraintViolation.getMessage())
                 .findFirst()
-                .orElse("COMMON400");
+                .orElseThrow(() -> new RuntimeException("ConstraintViolationException 추출 도중 에러 발생"));
 
-        // 코드에 해당하는 ErrorStatus 조회
-        ErrorStatus errorStatus = ErrorStatus.fromCode(errorCode)
-                .orElse(ErrorStatus._BAD_REQUEST);
-
-        // ErrorStatus를 기반으로 응답 생성
-        return handleExceptionInternalConstraint(ex, errorStatus, HttpHeaders.EMPTY, request);
+        return handleExceptionInternalConstraint(e, ErrorStatus.valueOf(errorMessage), HttpHeaders.EMPTY,request);
     }
 
     @Override
