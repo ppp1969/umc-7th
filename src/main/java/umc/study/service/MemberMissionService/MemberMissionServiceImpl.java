@@ -2,6 +2,8 @@ package umc.study.service.MemberMissionService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import umc.study.converter.MemberMissionConverter;
 import umc.study.domain.Member;
@@ -42,5 +44,12 @@ public class MemberMissionServiceImpl implements MemberMissionService{
         mission.get().addMemberMission(memberMission);
 
         return memberMissionRepository.save(memberMission);
+    }
+
+    @Override
+    public Page<MemberMission> getMemberMissionList(Long memberId, Integer page) {
+        Optional<Member> member = memberRepository.findById(memberId);
+        return memberMissionRepository.findAllByMember(member.get(), PageRequest.of(page - 1, 10));
+
     }
 }
