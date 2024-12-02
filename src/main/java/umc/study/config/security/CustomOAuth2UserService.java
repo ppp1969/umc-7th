@@ -26,13 +26,37 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        // 공급자 정보 확인
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        String nickname = (String) properties.get("nickname");
-        String email = nickname + "@kakao.com"; // 임시 이메일 생성
+        String nickname;
+        String emailDomain;
+
+        // 공급자별 사용자 정보 처리
+        switch (registrationId) {
+            case "kakao":
+                Map<String, Object> kakaoProperties = (Map<String, Object>) attributes.get("properties");
+                nickname = (String) kakaoProperties.get("nickname");
+                emailDomain = "@kakao.com";
+                break;
+            case "google":
+                nickname = (String) attributes.get("name"); // Google의 닉네임은 name 필드
+                emailDomain = "@google.com";
+                break;
+            case "naver":
+                Map<String, Object> naverResponse = (Map<String, Object>) attributes.get("response");
+                nickname = (String) naverResponse.get("nickname");
+                emailDomain = "@naver.com";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported provider: " + registrationId);
+        }
+
+        // 이메일 생성
+        String email = nickname + emailDomain;
 
         // 사용자 정보 저장 또는 업데이트
         Member member = saveOrUpdateUser(email, nickname);
@@ -44,7 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(
                 oAuth2User.getAuthorities(),
                 modifiedAttributes,
-                "email"  // email Principal로 설정
+                "email" // email을 Principal로 설정
         );
     }
 
