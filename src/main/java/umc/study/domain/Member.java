@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.study.domain.common.BaseEntity;
 import umc.study.domain.enums.Gender;
+import umc.study.domain.enums.Role;
 import umc.study.domain.enums.SocialType;
 import umc.study.domain.enums.MemberStatus;
 import umc.study.domain.mapping.MemberAgree;
@@ -30,6 +31,16 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     @Column(nullable = false, length = 20)
     private String name;
 
@@ -51,9 +62,6 @@ public class Member extends BaseEntity {
     private MemberStatus status;
 
     private LocalDate inactiveDate;
-
-//    @Column(nullable = false, length = 50)
-    private String email;
 
     @ColumnDefault("0")
     private Integer point;
@@ -96,5 +104,9 @@ public class Member extends BaseEntity {
             this.memberMissionList.remove(memberMission);
             memberMission.setMember(null); // 관계 해제
         }
+    }
+
+    public void encodePassword(String password) {
+        this.password = password;
     }
 }
