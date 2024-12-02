@@ -32,6 +32,9 @@ public class MemberConverter {
         }
 
         return Member.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole())
                 .address(request.getAddress())
                 .specAddress(request.getSpecAddress())
                 .gender(gender)
